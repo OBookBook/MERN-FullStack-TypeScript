@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@types/express": "^5.0.1",
+    "@types/node": "^22.15.17",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "mongoose": "^8.14.2",
