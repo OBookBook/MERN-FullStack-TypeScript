@@ -25,4 +25,23 @@ router.put("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
+// DELETE:http://localhost:3000/api/users/:id
+// example:http://localhost:3000/api/users/682498654d9a38897d7fdf6e
+// body:raw, json
+// {
+//   "userId": "682498654d9a38897d7fdf6e",
+// }
+router.delete("/:id", async (req: express.Request, res: express.Response) => {
+  if (req.body.userId === req.params.id || req.body.isAdmin) {
+    try {
+      await User.findByIdAndDelete(req.params.id);
+      res.status(200).json("deleted user");
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  } else {
+    res.status(403).json("you can delete only your account");
+  }
+});
+
 export default router;
