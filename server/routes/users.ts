@@ -44,4 +44,20 @@ router.delete("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
+// GET:http://localhost:3000/api/users/:id
+// example:http://localhost:3000/api/users/6824978b87324240baccd640
+// body:raw, json
+// {
+//   "userId": "6824978b87324240baccd640"
+// }
+router.get("/:id", async (req: express.Request, res: express.Response) => {
+  try {
+    const user = await User.findById(req.params.id);
+    const { password, updatedAt, ...other } = user?.toObject() || {};
+    res.status(200).json(other);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 export default router;
