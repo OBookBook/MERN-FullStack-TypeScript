@@ -97,4 +97,40 @@ router.put(
   }
 );
 
+// PUT:http://localhost:3000/api/users/:id/unfollow
+// example:http://localhost:3000/api/users/6824978b87324240baccd640/unfollow
+// body:raw, json
+// {
+//   "userId": "6824984c4d9a38897d7fdf6c",
+// }
+router.put(
+  "/:id/unfollow",
+  async (req: express.Request, res: express.Response) => {
+    if (req.body.userId !== req.params.id) {
+      try {
+        const user = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.body.userId);
+        if (user?.followers.includes(req.body.userId)) {
+          await user?.updateOne({
+            $pull: {
+              followers: req.body.userId,
+            },
+          });
+          await currentUser?.updateOne({
+            $pull: {
+              followings: req.params.id,
+            },
+          });
+          res.status(200).json("user has been unfollowed");
+        } else {
+          res.status(403).json("you don't follow this user");
+        }
+      } catch (error) {
+        res.status(500).json(error);
+      }
+    } else {
+      res.status(500).json("can't unfollow yourself");
+    }
+  }
+);
 export default router;
