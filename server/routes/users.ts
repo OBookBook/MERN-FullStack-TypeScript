@@ -60,4 +60,41 @@ router.get("/:id", async (req: express.Request, res: express.Response) => {
   }
 });
 
+// PUT:http://localhost:3000/api/users/:id/follow
+// example:http://localhost:3000/api/users/6824978b87324240baccd640/follow
+// body:raw, json
+// {
+//   "userId": "6824984c4d9a38897d7fdf6c",
+// }
+router.put(
+  "/:id/follow",
+  async (req: express.Request, res: express.Response) => {
+    if (req.body.userId !== req.params.id) {
+      try {
+        const user = await User.findById(req.params.id);
+        const currentUser = await User.findById(req.body.userId);
+        if (!user?.followers.includes(req.body.userId)) {
+          await user?.updateOne({
+            $push: {
+              followers: req.body.userId,
+            },
+          });
+          await currentUser?.updateOne({
+            $push: {
+              followings: req.params.id,
+            },
+          });
+          res.status(200).json("user has been followed");
+        } else {
+          res.status(403).json("you already follow this user");
+        }
+      } catch (error) {
+        res.status(500).json(error);
+      }
+    } else {
+      res.status(500).json("can't follow yourself");
+    }
+  }
+);
+
 export default router;
