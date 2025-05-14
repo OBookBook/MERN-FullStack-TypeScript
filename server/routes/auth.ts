@@ -27,4 +27,25 @@ router.post(
   }
 );
 
+// login
+// POST:http://localhost:3000/api/auth/login
+// body:raw, json
+// {
+//   "email": "test@co.jp",
+//   "password": "testtest"
+// }
+router.post("/login", async (req: express.Request, res: express.Response) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) res.status(404).json("user not found");
+
+    const valiedPassword = req.body.password === user?.password;
+    if (!valiedPassword) res.status(400).json("wrong password");
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
 export default router;
