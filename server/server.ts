@@ -20,6 +20,7 @@ mongoose
   });
 
 // Middleware
+app.use(express.json());
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
